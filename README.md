@@ -8,7 +8,7 @@ Update approved fields on the team device
 [![Gitter](https://badges.gitter.im/octoblu/help.svg)](https://gitter.im/octoblu/help)
 
 ## Update device config
-`id` is the "real" device's uuid. Removes [OMITTED_FIELDS](/octoblu/team-device-service/tree/master/src/controllers/config-controller.coffee) from `POST` body.
+`id` is the "real" device's uuid. Removes [OMITTED_FIELDS](/src/controllers/config-controller.coffee) from `POST` body.
 
 ```
   POST /config/:id
