@@ -9,7 +9,7 @@ debug              = require('debug')('team-device-service:server')
 Router             = require './router'
 
 class Server
-  constructor: ({@port}, {@meshbluConfig})->
+  constructor: ({@port}, {@meshbluConfig}={})->
     @meshbluConfig ?= new MeshbluConfig().toJSON()
 
   address: =>
