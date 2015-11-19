@@ -8,15 +8,15 @@ OMITTED_FIELDS = [
   'token'
   'sendWhitelist'
   'recieveWhitelist'
-  'configWhitelist'
+  'configureWhitelist'
   'discoverWhitelist'
   'sendBlacklist'
   'recieveBlacklist'
-  'configBlacklist'
+  'configureBlacklist'
   'discoverBlacklist'
   'sendAsWhitelist'
   'recieveAsWhitelist'
-  'configAsWhitelist'
+  'configureAsWhitelist'
   'discoverAsWhitelist'
 ]
 
@@ -28,6 +28,7 @@ class ConfigController
     {id} = req.params
     config = _.omit req.body, OMITTED_FIELDS
     @meshbluHttp.update id, config, (error) =>
-      res.send(204).end()
+      res.status(422).send(error.message) if error?
+      res.status(204).end()
 
 module.exports = ConfigController

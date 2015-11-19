@@ -37,15 +37,15 @@ describe 'POST /config', ->
       token: 'steal-me'
       sendWhitelist: []
       recieveWhitelist: []
-      configWhitelist: []
+      configureWhitelist: []
       discoverWhitelist: []
       sendBlacklist: []
       recieveBlacklist: []
-      configBlacklist: []
+      configureBlacklist: []
       discoverBlacklist: []
       sendAsWhitelist: []
       recieveAsWhitelist: []
-      configAsWhitelist: []
+      configureAsWhitelist: []
       discoverAsWhitelist: []
 
     options =
