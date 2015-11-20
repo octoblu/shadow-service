@@ -1,5 +1,6 @@
 {
   "name": "team-device-service",
+  "private": true,
   "version": "1.0.3",
   "description": "Put some description here",
   "keywords": [
