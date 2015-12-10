@@ -16,7 +16,9 @@ describe 'POST /config', ->
       port: 0xb33f
 
     @server = new Server
-      port: undefined, {meshbluConfig: meshbluConfig}
+      port: undefined
+      meshbluConfig: meshbluConfig
+
     @server.run =>
       @serverPort = @server.address().port
       done()
