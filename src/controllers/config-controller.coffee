@@ -7,7 +7,7 @@ OMITTED_FIELDS = [
   'owner'
   'token'
   'sendWhitelist'
-  'recieveWhitelist'
+  'receiveWhitelist'
   'configureWhitelist'
   'discoverWhitelist'
   'sendBlacklist'
@@ -15,7 +15,7 @@ OMITTED_FIELDS = [
   'configureBlacklist'
   'discoverBlacklist'
   'sendAsWhitelist'
-  'recieveAsWhitelist'
+  'receiveAsWhitelist'
   'configureAsWhitelist'
   'discoverAsWhitelist'
 ]
