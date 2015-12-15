@@ -38,7 +38,7 @@ describe 'POST /config', ->
       owner: 'someone-else'
       token: 'steal-me'
       sendWhitelist: []
-      recieveWhitelist: []
+      receiveWhitelist: []
       configureWhitelist: []
       discoverWhitelist: []
       sendBlacklist: []
@@ -46,7 +46,7 @@ describe 'POST /config', ->
       configureBlacklist: []
       discoverBlacklist: []
       sendAsWhitelist: []
-      recieveAsWhitelist: []
+      receiveAsWhitelist: []
       configureAsWhitelist: []
       discoverAsWhitelist: []
 
