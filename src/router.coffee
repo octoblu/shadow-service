@@ -1,10 +1,10 @@
 ConfigController = require './controllers/config-controller'
 
 class Router
-  constructor: ({meshbluConfig}) ->
-    @configController = new ConfigController meshbluConfig: meshbluConfig
+  constructor: () ->
+    @configController = new ConfigController
 
   route: (app) =>
-    app.post '/config/:id', @configController.update
+    app.post '/config', @configController.update
 
 module.exports = Router

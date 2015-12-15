@@ -21,14 +21,12 @@ OMITTED_FIELDS = [
 ]
 
 class ConfigController
-  constructor: ({meshbluConfig}) ->
-    @meshbluHttp = new MeshbluHttp meshbluConfig
-
-  update: (req, res) =>
-    {id} = req.params
-    config = _.omit req.body, OMITTED_FIELDS
-    @meshbluHttp.update id, config, (error) =>
-      res.status(422).send(error.message) if error?
-      res.status(204).end()
+  update: (request, result) =>
+    config = _.omit request.body, OMITTED_FIELDS
+    {uuid} = request.meshbluAuth
+    meshbluHttp = new MeshbluHttp request.meshbluAuth
+    meshbluHttp.update uuid, config, (error) =>
+      result.status(422).send(error.message) if error?
+      result.status(204).end()
 
 module.exports = ConfigController

@@ -18,6 +18,7 @@ describe 'POST /config', ->
     @server = new Server
       port: undefined
       meshbluConfig: meshbluConfig
+      disableLogging: true
 
     @server.run =>
       @serverPort = @server.address().port
@@ -28,11 +29,11 @@ describe 'POST /config', ->
 
   beforeEach (done) ->
     auth =
-      username: 'team-uuid'
-      password: 'team-token'
+      username: 'the-real-uuid'
+      password: 'the-real-token'
 
     device =
-      uuid: 'virtual-device-uuid'
+      uuid: 'the-real-uuid'
       foo: 'bar'
       meshblu: 'pwned!'
       owner: 'someone-else'
@@ -54,16 +55,24 @@ describe 'POST /config', ->
       auth: auth
       json: device
 
-    @meshblu.get('/v2/whoami')
-      .reply(200, '{"uuid": "team-uuid"}')
+    @whoamiHandler = @meshblu.get('/v2/whoami')
+      .reply(200, '{"uuid": "the-real-uuid"}')
 
-    @patchHandler = @meshblu.patch('/v2/devices/real-device-uuid')
-      .send(foo: 'bar')
-      .reply(204, http.STATUS_CODES[204])
+    basicAuth = new Buffer('the-real-uuid:the-real-token').toString('base64')
 
-    request.post "http://localhost:#{@serverPort}/config/real-device-uuid", options, (@error, @response, @body) =>
+    @patchHandler = @meshblu.patch('/v2/devices/the-real-uuid')
+      .set 'Authorization', "Basic #{basicAuth}"
+      .send foo: 'bar'
+      .reply 204, http.STATUS_CODES[204]
+
+    request.post "http://localhost:#{@serverPort}/config", options, (@error, @response, @body) =>
       done @error
 
   it 'should update the real device in meshblu', ->
     expect(@response.statusCode).to.equal 204
+
+  it 'should call the patch handler', ->
     expect(@patchHandler.isDone).to.be.true
+
+  it 'should call the whoami handler', ->
+    expect(@whoamiHandler.isDone).to.be.true

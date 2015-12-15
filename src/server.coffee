@@ -8,14 +8,14 @@ debug              = require('debug')('team-device-service:server')
 Router             = require './router'
 
 class Server
-  constructor: ({@port,@meshbluConfig})->
+  constructor: ({@port,@meshbluConfig, @disableLogging})->
 
   address: =>
     @server.address()
 
   run: (callback) =>
     app = express()
-    app.use morgan('dev', immediate: false)
+    app.use morgan 'dev', immediate: false unless @disableLogging
     app.use errorHandler()
     app.use meshbluHealthcheck()
     app.use meshbluAuth @meshbluConfig
