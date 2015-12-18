@@ -18,15 +18,23 @@ OMITTED_FIELDS = [
   'receiveAsWhitelist'
   'configureAsWhitelist'
   'discoverAsWhitelist'
+  'shadowing'
 ]
 
 class ConfigController
-  update: (request, result) =>
+  update: (request, response) =>
+    return response.sendStatus 204 unless request.body.shadowing?.uuid?
+    
+    uuid   = request.body.shadowing.uuid
     config = _.omit request.body, OMITTED_FIELDS
-    {uuid} = request.meshbluAuth
     meshbluHttp = new MeshbluHttp request.meshbluAuth
     meshbluHttp.update uuid, config, (error) =>
-      result.status(422).send(error.message) if error?
-      result.status(204).end()
+      return @sendError {response, error} if error?
+      response.status(204).end()
+
+  sendError: ({response,error}) =>
+    return response.status(500).send error.message unless error.code?
+    return response.status(error.code).send error.message
+
 
 module.exports = ConfigController

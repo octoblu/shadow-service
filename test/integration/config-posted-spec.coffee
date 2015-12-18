@@ -1,16 +1,12 @@
 http = require 'http'
 request = require 'request'
-shmock = require 'shmock'
+shmock = require '@octoblu/shmock'
 Server = require '../../src/server'
 
 describe 'POST /config', ->
-  beforeEach ->
+  beforeEach (done) ->
     @meshblu = shmock 0xb33f
 
-  afterEach (done) ->
-    @meshblu.close => done()
-
-  beforeEach (done) ->
     meshbluConfig =
       server: 'localhost'
       port: 0xb33f
@@ -25,54 +21,99 @@ describe 'POST /config', ->
       done()
 
   afterEach (done) ->
-    @server.stop => done()
+    @meshblu.close done
 
-  beforeEach (done) ->
-    auth =
-      username: 'the-real-uuid'
-      password: 'the-real-token'
+  afterEach (done) ->
+    @server.stop done
 
-    device =
-      uuid: 'the-real-uuid'
-      foo: 'bar'
-      meshblu: 'pwned!'
-      owner: 'someone-else'
-      token: 'steal-me'
-      sendWhitelist: []
-      receiveWhitelist: []
-      configureWhitelist: []
-      discoverWhitelist: []
-      sendBlacklist: []
-      recieveBlacklist: []
-      configureBlacklist: []
-      discoverBlacklist: []
-      sendAsWhitelist: []
-      receiveAsWhitelist: []
-      configureAsWhitelist: []
-      discoverAsWhitelist: []
+  describe 'when a valid shadow request is made', ->
+    beforeEach (done) ->
+      teamAuth = new Buffer('team-uuid:team-token').toString('base64')
 
-    options =
-      auth: auth
-      json: device
+      @whoamiHandler = @meshblu
+        .get '/v2/whoami'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'team-uuid'
 
-    @whoamiHandler = @meshblu.get('/v2/whoami')
-      .reply(200, '{"uuid": "the-real-uuid"}')
+      @updateRealMeshbluDevice = @meshblu
+        .patch '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .send foo: 'bar'
+        .reply 204
 
-    basicAuth = new Buffer('the-real-uuid:the-real-token').toString('base64')
+      options =
+        baseUrl: "http://localhost:#{@serverPort}"
+        uri: '/config'
+        auth:
+          username: 'team-uuid'
+          password: 'team-token'
+        json:
+          uuid: 'virtual-uuid'
+          foo: 'bar'
+          shadowing: {uuid: 'real-device-uuid'}
 
-    @patchHandler = @meshblu.patch('/v2/devices/the-real-uuid')
-      .set 'Authorization', "Basic #{basicAuth}"
-      .send foo: 'bar'
-      .reply 204, http.STATUS_CODES[204]
+      request.post options, (error, @response, @body) => done error
 
-    request.post "http://localhost:#{@serverPort}/config", options, (@error, @response, @body) =>
-      done @error
+    it 'should return a 204', ->
+      expect(@response.statusCode).to.equal 204, @body
 
-  it 'should update the real device in meshblu', ->
-    expect(@response.statusCode).to.equal 204
+    it 'should update the real meshblu device', ->
+      @updateRealMeshbluDevice.done()
 
-  it 'should call the patch handler', ->
-    expect(@patchHandler.isDone).to.be.true
+  describe 'when the device is not shadowing', ->
+    beforeEach (done) ->
+      teamAuth = new Buffer('team-uuid:team-token').toString('base64')
 
-  it 'should call the whoami handler', ->
-    expect(@whoamiHandler.isDone).to.be.true
+      @whoamiHandler = @meshblu
+        .get '/v2/whoami'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'team-uuid'
+
+      options =
+        baseUrl: "http://localhost:#{@serverPort}"
+        uri: '/config'
+        auth:
+          username: 'team-uuid'
+          password: 'team-token'
+        json:
+          uuid: 'real-uuid'
+          foo: 'bar'
+
+      request.post options, (error, @response, @body) => done error
+
+    it 'should return a 204', ->
+      expect(@response.statusCode).to.equal 204, @body
+
+  describe 'when the auth is insufficient to update the real device', ->
+    beforeEach (done) ->
+      teamAuth = new Buffer('team-uuid:team-token').toString('base64')
+
+      @whoamiHandler = @meshblu
+        .get '/v2/whoami'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'team-uuid'
+
+      @updateRealMeshbluDevice = @meshblu
+        .patch '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .send foo: 'bar'
+        .reply 403
+
+      options =
+        baseUrl: "http://localhost:#{@serverPort}"
+        uri: '/config'
+        auth:
+          username: 'team-uuid'
+          password: 'team-token'
+        json:
+          uuid: 'virtual-uuid'
+          foo: 'bar'
+          shadowing: {uuid: 'real-device-uuid'}
+
+      request.post options, (error, @response, @body) => done error
+
+    it 'should update the real meshblu device', ->
+      @updateRealMeshbluDevice.done()
+
+    it 'should return a 403', ->
+      expect(@response.statusCode).to.equal 403, @body
