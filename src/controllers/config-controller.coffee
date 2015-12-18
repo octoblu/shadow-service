@@ -4,6 +4,7 @@ MeshbluHttp = require 'meshblu-http'
 OMITTED_FIELDS = [
   'uuid'
   'meshblu'
+  'name'
   'owner'
   'token'
   'sendWhitelist'
@@ -24,7 +25,7 @@ OMITTED_FIELDS = [
 class ConfigController
   update: (request, response) =>
     return response.sendStatus 204 unless request.body.shadowing?.uuid?
-    
+
     uuid   = request.body.shadowing.uuid
     config = _.omit request.body, OMITTED_FIELDS
     meshbluHttp = new MeshbluHttp request.meshbluAuth
