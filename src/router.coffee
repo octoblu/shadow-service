@@ -1,10 +1,10 @@
-ConfigController = require './controllers/config-controller'
+VirtualConfigController = require './controllers/virtual-config-controller'
 
 class Router
   constructor: () ->
-    @configController = new ConfigController
+    @virtualConfigController = new VirtualConfigController
 
   route: (app) =>
-    app.post '/config', @configController.update
+    app.post '/virtual/config', @virtualConfigController.update
 
 module.exports = Router

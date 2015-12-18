@@ -3,7 +3,7 @@ request = require 'request'
 shmock = require '@octoblu/shmock'
 Server = require '../../src/server'
 
-describe 'POST /config', ->
+describe 'POST /virtual/config', ->
   beforeEach (done) ->
     @meshblu = shmock 0xb33f
 
@@ -43,7 +43,7 @@ describe 'POST /config', ->
 
       options =
         baseUrl: "http://localhost:#{@serverPort}"
-        uri: '/config'
+        uri: '/virtual/config'
         auth:
           username: 'team-uuid'
           password: 'team-token'
@@ -71,7 +71,7 @@ describe 'POST /config', ->
 
       options =
         baseUrl: "http://localhost:#{@serverPort}"
-        uri: '/config'
+        uri: '/virtual/config'
         auth:
           username: 'team-uuid'
           password: 'team-token'
@@ -101,7 +101,7 @@ describe 'POST /config', ->
 
       options =
         baseUrl: "http://localhost:#{@serverPort}"
-        uri: '/config'
+        uri: '/virtual/config'
         auth:
           username: 'team-uuid'
           password: 'team-token'
