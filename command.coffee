@@ -1,3 +1,5 @@
+### !pragma coverage-skip-block ###
+
 MeshbluConfig = require 'meshblu-config'
 Server        = require './src/server'
 

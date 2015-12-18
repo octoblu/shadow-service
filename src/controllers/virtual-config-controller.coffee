@@ -37,5 +37,4 @@ class VirtualConfigController
     return response.status(500).send error.message unless error.code?
     return response.status(error.code).send error.message
 
-
 module.exports = VirtualConfigController
