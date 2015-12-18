@@ -22,7 +22,7 @@ OMITTED_FIELDS = [
   'shadowing'
 ]
 
-class ConfigController
+class VirtualConfigController
   update: (request, response) =>
     return response.sendStatus 204 unless request.body.shadowing?.uuid?
 
@@ -38,4 +38,4 @@ class ConfigController
     return response.status(error.code).send error.message
 
 
-module.exports = ConfigController
+module.exports = VirtualConfigController
