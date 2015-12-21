@@ -1,10 +1,12 @@
-_ = require 'lodash'
+_           = require 'lodash'
+debug       = require('debug')('shadow-service:virtual-config-controller')
 MeshbluHttp = require 'meshblu-http'
 
 OMITTED_FIELDS = [
   'uuid'
   'meshblu'
   'owner'
+  'type'
   'token'
   'sendWhitelist'
   'receiveWhitelist'
@@ -28,13 +30,17 @@ class VirtualConfigController
 
     uuid   = request.body.shadowing.uuid
     config = _.omit request.body, OMITTED_FIELDS
+    debug 'virtualDevice: updateReal'
     meshbluHttp = new MeshbluHttp request.meshbluAuth
     meshbluHttp.update uuid, config, (error) =>
       return @sendError {response, error} if error?
-      response.status(204).end()
+      debug "204: update success"
+      response.sendStatus(204)
 
   sendError: ({response,error}) =>
+    debug "500: #{error.message}" unless error.code?
     return response.status(500).send error.message unless error.code?
+    debug "#{error.code}: #{error.message}"
     return response.status(error.code).send error.message
 
 module.exports = VirtualConfigController

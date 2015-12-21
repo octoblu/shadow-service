@@ -7,7 +7,6 @@ OMITTED_FIELDS = [
   'meshblu'
   'name'
   'owner'
-  'type'
   'token'
   'sendWhitelist'
   'receiveWhitelist'
