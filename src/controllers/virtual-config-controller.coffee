@@ -20,6 +20,7 @@ OMITTED_FIELDS = [
   'configureAsWhitelist'
   'discoverAsWhitelist'
   'shadowing'
+  'shadows'
 ]
 
 class VirtualConfigController

@@ -2,7 +2,27 @@ _           = require 'lodash'
 async       = require 'async'
 MeshbluHttp = require 'meshblu-http'
 
-OMITTED_FIELDS = ['uuid', 'shadows']
+OMITTED_FIELDS = [
+  'uuid'
+  'meshblu'
+  'name'
+  'owner'
+  'token'
+  'sendWhitelist'
+  'receiveWhitelist'
+  'configureWhitelist'
+  'discoverWhitelist'
+  'sendBlacklist'
+  'recieveBlacklist'
+  'configureBlacklist'
+  'discoverBlacklist'
+  'sendAsWhitelist'
+  'receiveAsWhitelist'
+  'configureAsWhitelist'
+  'discoverAsWhitelist'
+  'shadowing'
+  'shadows'
+]
 
 class RealDevice
   constructor: ({@attributes,meshbluConfig}) ->
