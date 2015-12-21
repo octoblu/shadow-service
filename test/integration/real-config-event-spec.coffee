@@ -35,6 +35,11 @@ describe 'POST /real/config', ->
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'real-device-uuid'
 
+      @meshblu
+        .get '/v2/devices/virtual-device-uuid'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'virtual-device-uuid'
+
       @updateVirtualMeshbluDevice = @meshblu
         .patch '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
@@ -113,4 +118,34 @@ describe 'POST /real/config', ->
       request.post options, (error, @response, @body) => done error
 
     it 'should return a 204', ->
+      expect(@response.statusCode).to.equal 204, @body
+
+  describe 'when a real device has 1 shadow that is already up-to-date', ->
+    beforeEach (done) ->
+      deviceAuth = new Buffer('real-device-uuid:real-device-token').toString('base64')
+
+      @meshblu
+        .get '/v2/whoami'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid'
+
+      @meshblu
+        .get '/v2/devices/virtual-device-uuid'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'virtual-device-uuid', foo: 'bar'
+
+      options =
+        baseUrl: "http://localhost:#{@serverPort}"
+        uri: '/real/config'
+        auth:
+          username: 'real-device-uuid'
+          password: 'real-device-token'
+        json:
+          uuid: 'real-device-uuid'
+          foo: 'bar'
+          shadows: [{uuid: 'virtual-device-uuid'}]
+
+      request.post options, (error, @response, @body) => done error
+
+    it 'should return a 204 without trying to update the virtual device', ->
       expect(@response.statusCode).to.equal 204, @body

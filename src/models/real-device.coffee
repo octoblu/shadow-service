@@ -9,8 +9,12 @@ class RealDevice
     @meshblu = new MeshbluHttp meshbluConfig
 
   updateShadow: ({uuid}, callback) =>
-    attributes = _.omit @attributes, OMITTED_FIELDS
-    @meshblu.update uuid, attributes, callback
+    newAttributes = _.omit @attributes, OMITTED_FIELDS
+    @meshblu.device uuid, (error, device) =>
+      existingAttributes = _.omit device, OMITTED_FIELDS
+      return callback() if _.isEqual newAttributes, existingAttributes
+
+      @meshblu.update uuid, newAttributes, callback
 
   updateShadows: (callback) =>
     async.each @attributes.shadows, @updateShadow, callback
