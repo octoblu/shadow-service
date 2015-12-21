@@ -4,7 +4,6 @@ MeshbluHttp = require 'meshblu-http'
 OMITTED_FIELDS = [
   'uuid'
   'meshblu'
-  'name'
   'owner'
   'token'
   'sendWhitelist'
