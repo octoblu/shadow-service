@@ -27,6 +27,11 @@ class RealDevice
   constructor: ({@attributes,meshbluConfig}) ->
     @meshblu = new MeshbluHttp meshbluConfig
 
+  messageShadows: ({message}, callback) =>
+    async.each @attributes.shadows, (shadow, callback) =>
+      @meshblu.message message, as: shadow.uuid, callback
+    , callback
+
   updateShadow: ({uuid}, callback) =>
     newAttributes = _.omit @attributes, OMITTED_FIELDS
     @meshblu.device uuid, (error, device) =>
