@@ -35,6 +35,12 @@ describe 'POST /virtual/config', ->
         .set 'Authorization', "Basic #{teamAuth}"
         .reply 200, uuid: 'team-uuid'
 
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200,
+          uuid: 'real-device-uuid'
+
       @updateRealMeshbluDevice = @meshblu
         .patch '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{teamAuth}"
@@ -59,6 +65,39 @@ describe 'POST /virtual/config', ->
 
     it 'should update the real meshblu device', ->
       @updateRealMeshbluDevice.done()
+
+  describe 'when a valid shadow request is made, but the config hasn\'t changed', ->
+    beforeEach (done) ->
+      teamAuth = new Buffer('team-uuid:team-token').toString('base64')
+
+      @meshblu
+        .get '/v2/whoami'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200,
+          uuid: 'team-uuid'
+
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200,
+          uuid: 'real-device-uuid'
+          fresh: 'soup'
+
+      options =
+        baseUrl: "http://localhost:#{@serverPort}"
+        uri: '/virtual/config'
+        auth:
+          username: 'team-uuid'
+          password: 'team-token'
+        json:
+          uuid: 'virtual-uuid'
+          fresh: 'soup'
+          shadowing: {uuid: 'real-device-uuid'}
+
+      request.post options, (error, @response, @body) => done error
+
+    it 'shouldn\'t update the real device', ->
+      expect(@response.statusCode).to.equal 204, @body
 
   describe 'when the device is not shadowing', ->
     beforeEach (done) ->
@@ -92,6 +131,12 @@ describe 'POST /virtual/config', ->
         .get '/v2/whoami'
         .set 'Authorization', "Basic #{teamAuth}"
         .reply 200, uuid: 'team-uuid'
+
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200,
+          uuid: 'real-device-uuid'
 
       @updateRealMeshbluDevice = @meshblu
         .patch '/v2/devices/real-device-uuid'
