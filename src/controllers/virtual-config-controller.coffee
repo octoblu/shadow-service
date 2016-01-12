@@ -23,6 +23,9 @@ OMITTED_FIELDS = [
   'discoverAsWhitelist'
   'shadowing'
   'shadows'
+  'geo'
+  'hash'
+  'ip'
 ]
 
 class VirtualConfigController
