@@ -4,7 +4,7 @@ RealDevice = require '../models/real-device'
 class RealConfigController
   update: (request, response) =>
     debug 'realDevice: updateShadows'
-    realDevice = new RealDevice attributes: request.body, meshbluConfig: request.meshbluAuth
+    realDevice = new RealDevice attributes: request.meshbluAuth.device, meshbluConfig: request.meshbluAuth
     realDevice.updateShadows (error) =>
       return @sendError {response, error} if error?
       debug "204: update success"

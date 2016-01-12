@@ -33,18 +33,25 @@ class VirtualConfigController
     return response.sendStatus 204 unless request.body.shadowing?.uuid?
 
     realDeviceUuid   = request.body.shadowing.uuid
-    config = _.omit request.body, OMITTED_FIELDS
+    virtualDeviceUuid = request.body.uuid
+
     debug 'virtualDevice: updateReal'
 
     meshbluHttp = new MeshbluHttp request.meshbluAuth
-    meshbluHttp.device realDeviceUuid, (error, realDevice) =>
+    meshbluHttp.device virtualDeviceUuid, (error, virtualDevice) =>
       return @sendError {response, error} if error?
 
-      return response.sendStatus(204) if _.isEqual config, _.omit(realDevice, OMITTED_FIELDS)
-      meshbluHttp.update realDeviceUuid, config, (error) =>
+      virtualDeviceConfig = _.omit virtualDevice, OMITTED_FIELDS
+      meshbluHttp.device realDeviceUuid, (error, realDevice) =>
         return @sendError {response, error} if error?
-        debug "204: update success"
-        response.sendStatus(204)
+
+        realDeviceConfig = _.omit realDevice, OMITTED_FIELDS
+        return response.sendStatus(204) if _.isEqual virtualDeviceConfig, realDeviceConfig
+
+        meshbluHttp.update realDeviceUuid, virtualDeviceConfig, (error) =>
+          return @sendError {response, error} if error?
+          debug "204: update success"
+          response.sendStatus(204)
 
   sendError: ({response,error}) =>
     debug "500: #{error.message}" unless error.code?

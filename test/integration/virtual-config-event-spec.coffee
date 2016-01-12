@@ -41,6 +41,11 @@ describe 'POST /virtual/config', ->
         .reply 200,
           uuid: 'real-device-uuid'
 
+      @meshblu
+        .get '/v2/devices/virtual-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'virtual-device-uuid', foo: 'bar', shadowing: {uuid: 'real-device-uuid'}
+
       @updateRealMeshbluDevice = @meshblu
         .patch '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{teamAuth}"
@@ -54,7 +59,7 @@ describe 'POST /virtual/config', ->
           username: 'team-uuid'
           password: 'team-token'
         json:
-          uuid: 'virtual-uuid'
+          uuid: 'virtual-device-uuid'
           foo: 'bar'
           shadowing: {uuid: 'real-device-uuid'}
 
@@ -83,6 +88,11 @@ describe 'POST /virtual/config', ->
           uuid: 'real-device-uuid'
           fresh: 'soup'
 
+      @meshblu
+        .get '/v2/devices/virtual-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'virtual-device-uuid', fresh: 'soup', shadowing: {uuid: 'real-device-uuid'}
+
       options =
         baseUrl: "http://localhost:#{@serverPort}"
         uri: '/virtual/config'
@@ -90,7 +100,7 @@ describe 'POST /virtual/config', ->
           username: 'team-uuid'
           password: 'team-token'
         json:
-          uuid: 'virtual-uuid'
+          uuid: 'virtual-device-uuid'
           fresh: 'soup'
           shadowing: {uuid: 'real-device-uuid'}
 
@@ -138,6 +148,11 @@ describe 'POST /virtual/config', ->
         .reply 200,
           uuid: 'real-device-uuid'
 
+      @meshblu
+        .get '/v2/devices/virtual-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'virtual-device-uuid', foo: 'bar', shadowing: {uuid: 'real-device-uuid'}
+
       @updateRealMeshbluDevice = @meshblu
         .patch '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{teamAuth}"
@@ -151,7 +166,7 @@ describe 'POST /virtual/config', ->
           username: 'team-uuid'
           password: 'team-token'
         json:
-          uuid: 'virtual-uuid'
+          uuid: 'virtual-device-uuid'
           foo: 'bar'
           shadowing: {uuid: 'real-device-uuid'}
 

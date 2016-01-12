@@ -33,7 +33,7 @@ describe 'POST /real/config', ->
       @meshblu
         .get '/v2/whoami'
         .set 'Authorization', "Basic #{deviceAuth}"
-        .reply 200, uuid: 'real-device-uuid'
+        .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
 
       @meshblu
         .get '/v2/devices/virtual-device-uuid'
@@ -72,7 +72,7 @@ describe 'POST /real/config', ->
       @meshblu
         .get '/v2/whoami'
         .set 'Authorization', "Basic #{deviceAuth}"
-        .reply 200, uuid: 'real-device-uuid'
+        .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
 
       @meshblu
         .patch '/v2/devices/virtual-device-uuid'
