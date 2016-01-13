@@ -1,16 +1,10 @@
-_           = require 'lodash'
-debug       = require('debug')('shadow-service:virtual-config-controller')
-MeshbluHttp = require 'meshblu-http'
-VirtualDevice = require '../models/virtual-device'
-
 class VirtualConfigController
+  constructor: ({@shadowService}) ->
   update: (request, response) =>
     meshbluConfig     = request.meshbluAuth
     realDeviceUuid    = request.body.shadowing?.uuid
     virtualDeviceUuid = request.body.uuid
-    virtualDevice     = new VirtualDevice {meshbluConfig}
-
-    virtualDevice.updateRealDevice {virtualDeviceUuid, realDeviceUuid}, (error) =>
+    @shadowService.updateRealDevice {virtualDeviceUuid, realDeviceUuid, meshbluConfig}, (error) =>
       return @sendError {response, error} if error?
       response.sendStatus 204
 
