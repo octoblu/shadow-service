@@ -1,7 +1,6 @@
 {
-  "name": "shadow-service",
-  "private": true,
-  "version": "3.2.3",
+  "name": "@octoblu/shadow-service",
+  "version": "3.3.0",
   "description": "Put some description here",
   "keywords": [
     "cool",
@@ -13,7 +12,7 @@
     "name": "Octoblu",
     "url": "https://github.com/octoblu"
   },
-  "main": "server.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/octoblu/team-device-service.git"

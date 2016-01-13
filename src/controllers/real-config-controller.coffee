@@ -1,19 +1,18 @@
-debug      = require('debug')('shadow-service:real-config-controller')
-RealDevice = require '../models/real-device'
+debug         = require('debug')('shadow-service:real-config-controller')
+RealDevice    = require '../models/real-device'
+ShadowService = require '../services/shadow-service'
 
 class RealConfigController
+  constructor: ({@shadowService}) ->
   update: (request, response) =>
     debug 'realDevice: updateShadows'
-    realDevice = new RealDevice attributes: request.meshbluAuth.device, meshbluConfig: request.meshbluAuth
-    realDevice.updateShadows (error) =>
+    attributes = request.meshbluAuth.device
+    meshbluConfig = request.meshbluAuth
+    @shadowService.updateShadows {attributes, meshbluConfig}, (error) =>
       return @sendError {response, error} if error?
-      debug "204: update success"
       response.sendStatus 204
 
   sendError: ({response,error}) =>
-    debug "500: #{error.message}" unless error.code?
-    return response.status(500).send error.message unless error.code?
-    debug "#{error.code}: #{error.message}"
-    return response.status(error.code).send error.message
+    response.status(error.code || 500).send error.message
 
 module.exports = RealConfigController
