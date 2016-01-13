@@ -31,11 +31,12 @@ class VirtualDevice
   constructor: ({meshbluConfig}) ->
     @meshblu = new MeshbluHttp meshbluConfig
 
-  updateRealDevice: ({realDeviceUuid, virtualDeviceUuid}, callback) =>
-    return callback() unless realDeviceUuid
-
+  updateRealDevice: (virtualDeviceUuid, callback) =>
     @meshblu.device virtualDeviceUuid, (error, virtualDevice) =>
       return callback error if error?
+
+      realDeviceUuid = virtualDevice.shadowing?.uuid
+      return callback() unless realDeviceUuid?
 
       virtualDeviceConfig = _.omit virtualDevice, OMITTED_FIELDS
       @meshblu.device realDeviceUuid, (error, realDevice) =>

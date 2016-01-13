@@ -118,6 +118,11 @@ describe 'POST /virtual/config', ->
         .set 'Authorization', "Basic #{teamAuth}"
         .reply 200, uuid: 'team-uuid'
 
+      @meshblu
+        .get '/v2/devices/virtual-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'virtual-uuid'
+
       options =
         baseUrl: "http://localhost:#{@serverPort}"
         uri: '/virtual/config'
@@ -125,7 +130,7 @@ describe 'POST /virtual/config', ->
           username: 'team-uuid'
           password: 'team-token'
         json:
-          uuid: 'real-uuid'
+          uuid: 'virtual-uuid'
           foo: 'bar'
 
       request.post options, (error, @response, @body) => done error

@@ -7,8 +7,8 @@ class ShadowService
       return callback error if error?
       callback()
 
-  updateRealDevice: ({virtualDeviceUuid, realDeviceUuid, meshbluConfig}, callback) =>
+  updateRealDevice: ({virtualDeviceUuid, meshbluConfig}, callback) =>
     virtualDevice     = new VirtualDevice {meshbluConfig}
-    virtualDevice.updateRealDevice {virtualDeviceUuid, realDeviceUuid}, callback
+    virtualDevice.updateRealDevice virtualDeviceUuid, callback
 
 module.exports = ShadowService
