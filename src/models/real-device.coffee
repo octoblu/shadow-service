@@ -2,7 +2,7 @@ _           = require 'lodash'
 async       = require 'async'
 MeshbluHttp = require 'meshblu-http'
 
-OMITTED_FIELDS = [
+PROTECTED_FIELDS = [
   'uuid'
   'meshblu'
   'owner'
@@ -35,19 +35,19 @@ class RealDevice
       @meshblu.message message, as: shadow.uuid, callback
     , callback
 
-  updateShadow: (device, {uuid}, callback) =>
-    newAttributes = _.omit device, OMITTED_FIELDS
-    @meshblu.device uuid, (error, device) =>
-      existingAttributes = _.omit device, OMITTED_FIELDS
-      return callback() if _.isEqual newAttributes, existingAttributes
+  updateShadow: (realDeviceConfig, {uuid}, callback) =>
+    @meshblu.device uuid, (error, virtualDevice) =>
+      virtualDeviceConfig = _.omit virtualDevice, PROTECTED_FIELDS
+      return callback() if _.isEqual realDeviceConfig, virtualDeviceConfig
 
-      @meshblu.update uuid, newAttributes, callback
+      @meshblu.updateDangerously uuid, realDeviceConfig, callback
 
   updateShadows: (realDeviceUuid, callback) =>
-    @meshblu.device realDeviceUuid, (error, device) =>
+    @meshblu.device realDeviceUuid, (error, realDevice) =>
+      realDeviceConfig = _.omit realDevice, PROTECTED_FIELDS
       #it's fine, guys.
-      updateShadow = _.partial(@updateShadow, device)
+      updateShadow = _.partial(@updateShadow, realDeviceConfig)
       return callback error if error?
-      async.each device.shadows, updateShadow, callback
+      async.each realDevice.shadows, updateShadow, callback
 
 module.exports = RealDevice

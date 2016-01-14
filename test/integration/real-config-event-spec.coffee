@@ -46,9 +46,10 @@ describe 'POST /real/config', ->
         .reply 200, uuid: 'virtual-device-uuid'
 
       @updateVirtualMeshbluDevice = @meshblu
-        .patch '/v2/devices/virtual-device-uuid'
+        .put '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
-        .send foo: 'bar'
+        .send
+          foo: 'bar'
         .reply 204
 
       options =
@@ -86,7 +87,7 @@ describe 'POST /real/config', ->
 
 
       @meshblu
-        .patch '/v2/devices/virtual-device-uuid'
+        .put '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .send foo: 'bar'
         .reply 403
@@ -258,7 +259,7 @@ describe 'POST /real/config', ->
         .get '/v2/whoami'
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'real-device-uuid'
-        
+
       @meshblu
         .get '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
