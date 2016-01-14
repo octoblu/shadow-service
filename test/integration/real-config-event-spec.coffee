@@ -33,23 +33,30 @@ describe 'POST /real/config', ->
       @meshblu
         .get '/v2/whoami'
         .set 'Authorization', "Basic #{deviceAuth}"
-        .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
+        .reply 200, uuid: 'real-device-uuid'
 
       @meshblu
         .get '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
-        .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
+        .reply 200,
+          uuid: 'real-device-uuid',
+          foo: 'bar',
+          shadows: [{uuid: 'virtual-device-uuid'}],
+          shadowing: 'blah'
+          discoverWhitelist: ['*']
 
       @meshblu
         .get '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
-        .reply 200, uuid: 'virtual-device-uuid'
+        .reply 200, uuid: 'virtual-device-uuid', shadowing: {uuid: 'real-device-uuid'}
 
       @updateVirtualMeshbluDevice = @meshblu
         .put '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .send
+          uuid: 'virtual-device-uuid'
           foo: 'bar'
+          shadowing: {uuid: 'real-device-uuid'}
         .reply 204
 
       options =

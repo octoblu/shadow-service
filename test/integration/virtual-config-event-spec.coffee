@@ -63,6 +63,7 @@ describe 'POST /virtual/config', ->
         json:
           uuid: 'virtual-device-uuid'
           foo: 'bar'
+          discoverWhitelist: ['*']
           shadowing: {uuid: 'real-device-uuid'}
 
       request.post options, (error, @response, @body) => done error
