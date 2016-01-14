@@ -36,6 +36,11 @@ describe 'POST /real/config', ->
         .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
 
       @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
+
+      @meshblu
         .get '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'virtual-device-uuid'
@@ -75,6 +80,12 @@ describe 'POST /real/config', ->
         .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
 
       @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid', foo: 'bar', shadows: [{uuid: 'virtual-device-uuid'}]
+
+
+      @meshblu
         .patch '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .send foo: 'bar'
@@ -105,6 +116,11 @@ describe 'POST /real/config', ->
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'real-device-uuid'
 
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid'
+
       options =
         baseUrl: "http://localhost:#{@serverPort}"
         uri: '/real/config'
@@ -126,6 +142,11 @@ describe 'POST /real/config', ->
 
       @meshblu
         .get '/v2/whoami'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid'
+
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'real-device-uuid'
 
@@ -156,6 +177,11 @@ describe 'POST /real/config', ->
 
       @meshblu
         .get '/v2/whoami'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid'
+
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'real-device-uuid'
 
@@ -195,6 +221,11 @@ describe 'POST /real/config', ->
         .reply 200, uuid: 'real-device-uuid'
 
       @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid'
+
+      @meshblu
         .get '/v2/devices/virtual-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200,
@@ -225,6 +256,11 @@ describe 'POST /real/config', ->
 
       @meshblu
         .get '/v2/whoami'
+        .set 'Authorization', "Basic #{deviceAuth}"
+        .reply 200, uuid: 'real-device-uuid'
+        
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{deviceAuth}"
         .reply 200, uuid: 'real-device-uuid'
 

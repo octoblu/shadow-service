@@ -1,9 +1,9 @@
 class RealConfigController
   constructor: ({@shadowService}) ->
   update: (request, response) =>
-    attributes = request.meshbluAuth.device
+    realDeviceUuid = request.body.uuid
     meshbluConfig = request.meshbluAuth
-    @shadowService.updateShadows {attributes, meshbluConfig}, (error) =>
+    @shadowService.syncShadowDevices {realDeviceUuid, meshbluConfig}, (error) =>
       return @sendError {response, error} if error?
       response.sendStatus 204
 
