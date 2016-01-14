@@ -2,7 +2,7 @@ _           = require 'lodash'
 async       = require 'async'
 MeshbluHttp = require 'meshblu-http'
 
-OMITTED_FIELDS = [
+PROTECTED_FIELDS = [
   'uuid'
   'meshblu'
   'owner'
@@ -37,15 +37,18 @@ class VirtualDevice
 
       realDeviceUuid = virtualDevice.shadowing?.uuid
       return callback() unless realDeviceUuid?
+      virtualDeviceConfig = _.omit(virtualDevice, PROTECTED_FIELDS)
 
-      virtualDeviceConfig = _.omit virtualDevice, OMITTED_FIELDS
       @meshblu.device realDeviceUuid, (error, realDevice) =>
         return callback error if error?
+        
+        realDeviceConfig = _.omit(realDevice, PROTECTED_FIELDS)
+        return callback() if _.isEqual realDeviceConfig, virtualDeviceConfig
 
-        realDeviceConfig = _.omit realDevice, OMITTED_FIELDS
-        return callback() if _.isEqual virtualDeviceConfig, realDeviceConfig
+        protectedRealDeviceConfig = _.pick realDevice, PROTECTED_FIELDS
+        newRealDeviceConfig = _.extend {}, virtualDeviceConfig, protectedRealDeviceConfig
 
-        @meshblu.update realDeviceUuid, virtualDeviceConfig, (error) =>
+        @meshblu.updateDangerously realDeviceUuid, newRealDeviceConfig, (error) =>
           return callback error if error?
           callback()
 

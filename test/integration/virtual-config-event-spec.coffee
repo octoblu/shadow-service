@@ -47,9 +47,11 @@ describe 'POST /virtual/config', ->
         .reply 200, uuid: 'virtual-device-uuid', foo: 'bar', shadowing: {uuid: 'real-device-uuid'}
 
       @updateRealMeshbluDevice = @meshblu
-        .patch '/v2/devices/real-device-uuid'
+        .put '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{teamAuth}"
-        .send foo: 'bar'
+        .send
+          uuid: 'real-device-uuid'
+          foo: 'bar'
         .reply 204
 
       options =
@@ -62,6 +64,55 @@ describe 'POST /virtual/config', ->
           uuid: 'virtual-device-uuid'
           foo: 'bar'
           shadowing: {uuid: 'real-device-uuid'}
+
+      request.post options, (error, @response, @body) => done error
+
+    it 'should return a 204', ->
+      expect(@response.statusCode).to.equal 204, @body
+
+    it 'should update the real meshblu device', ->
+      @updateRealMeshbluDevice.done()
+
+  describe 'when a valid shadow request is made to remove a property', ->
+    beforeEach (done) ->
+      teamAuth = new Buffer('team-uuid:team-token').toString('base64')
+
+      @whoamiHandler = @meshblu
+        .get '/v2/whoami'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'team-uuid'
+
+      @meshblu
+        .get '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200, uuid: 'real-device-uuid', dinner: ['steak', 'peter']
+
+      @meshblu
+        .get '/v2/devices/virtual-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .reply 200,
+          uuid: 'virtual-device-uuid'
+          breakfast: ['eggs', 'bacon']
+          shadowing: {uuid: 'real-device-uuid'}
+
+      options =
+        baseUrl: "http://localhost:#{@serverPort}"
+        uri: '/virtual/config'
+        auth:
+          username: 'team-uuid'
+          password: 'team-token'
+        json:
+          uuid: 'virtual-device-uuid'
+          breakfast: ['eggs', 'bacon']
+          shadowing: {uuid: 'real-device-uuid'}
+
+      @updateRealMeshbluDevice = @meshblu
+        .put '/v2/devices/real-device-uuid'
+        .set 'Authorization', "Basic #{teamAuth}"
+        .send
+          uuid: 'real-device-uuid'
+          breakfast: ['eggs', 'bacon']
+        .reply 204
 
       request.post options, (error, @response, @body) => done error
 
@@ -159,9 +210,11 @@ describe 'POST /virtual/config', ->
         .reply 200, uuid: 'virtual-device-uuid', foo: 'bar', shadowing: {uuid: 'real-device-uuid'}
 
       @updateRealMeshbluDevice = @meshblu
-        .patch '/v2/devices/real-device-uuid'
+        .put '/v2/devices/real-device-uuid'
         .set 'Authorization', "Basic #{teamAuth}"
-        .send foo: 'bar'
+        .send
+          uuid: 'real-device-uuid'
+          foo: 'bar'
         .reply 403
 
       options =
