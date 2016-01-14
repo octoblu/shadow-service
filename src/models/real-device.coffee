@@ -38,9 +38,11 @@ class RealDevice
   updateShadow: (realDeviceConfig, {uuid}, callback) =>
     @meshblu.device uuid, (error, virtualDevice) =>
       virtualDeviceConfig = _.omit virtualDevice, PROTECTED_FIELDS
+      protectedVirtualDeviceConfig = _.pick virtualDevice, PROTECTED_FIELDS
       return callback() if _.isEqual realDeviceConfig, virtualDeviceConfig
 
-      @meshblu.updateDangerously uuid, realDeviceConfig, callback
+      newVirtualDeviceConfig = _.extend {}, realDeviceConfig, protectedVirtualDeviceConfig
+      @meshblu.updateDangerously uuid, newVirtualDeviceConfig, callback
 
   updateShadows: (realDeviceUuid, callback) =>
     @meshblu.device realDeviceUuid, (error, realDevice) =>
